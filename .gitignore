@@ -4,4 +4,5 @@ _site
 .sass-cache/*
 .dat
 .jekyll-metadata
-Gemfile.lock
+node_modules
+vendor
