@@ -1,0 +1,41 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  build:
+    working_directory: ~/beautiful-web-type
+    docker:
+      # specify the version you desire here
+      - image: circleci/ruby:2.6-node
+
+    steps:
+      - checkout
+
+      - run: gem install bundler:1.17.2
+
+      # Restoring bundler cache
+      - restore_cache:
+          name: Restoring bundler cache
+          key: bundler-v1-{{ checksum "Gemfile.lock" }}
+
+      #Bundler Dependencies
+      - run: 
+          name: Jekyll deps
+          command: bundle install --jobs=4 --retry=3 --path vendor/bundle
+      
+      # Saving bundler cache
+      - save_cache:
+          name: Saving bundler cache
+          key: bundler-v1-{{ checksum "Gemfile.lock" }}
+          paths: 
+            - ./vendor/bundle 
+
+      - run:
+          name: Jekyll build
+          command: bundle exec jekyll build
+
+      - run:
+          name: Pinging FeaturePeek
+          command: bash <(curl -s https://peek.run/ci)
