@@ -12,32 +12,6 @@ jobs:
 
     steps:
       - checkout
-      - run:
-          name: "Update Node.js and npm"
-          command: |
-            curl -sSL "https://nodejs.org/dist/v8.15.0/node-v8.15.0-linux-x64.tar.xz" | sudo tar --strip-components=2 -xJ -C /usr/local/bin/ node-v8.15.0-linux-x64/bin/node
-            curl https://www.npmjs.com/install.sh | sudo bash
-      - run:
-          name: Check current version of node
-          command: node -v
-
-      #Restoring yarn cache
-      - restore_cache:
-          name: Restoring yarn cache
-          keys:
-            # when lock file changes, use increasingly general patterns to restore cache
-            - yarn-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - yarn-v1-{{ .Branch }}-
-            - yarn-v1-
-
-      - run: yarn
-
-      #Saving yarn cache
-      - save_cache:
-          name: Saving yarn cache
-          paths:
-            -  node_modules  # location depends on yarn version
-          key: yarn-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
       - run: gem install bundler:1.17.2
 
@@ -62,9 +36,6 @@ jobs:
           name: Jekyll build
           command: bundle exec jekyll build
 
-      - store_artifacts:
-          path: ./_site
-
       - run:
           name: Pinging FeaturePeek
-          command: yarn featurepeek
+          command: bash <(curl -s https://peek.run/ci)
