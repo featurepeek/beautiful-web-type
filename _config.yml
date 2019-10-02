@@ -1,10 +1,10 @@
-url: 'https://beautifulwebtype.com'
+url: ''
 
 plugins:
   - jekyll-sitemap
 
 include: ['.well-known']
-exclude: ['Rakefile']
+exclude: ['Rakefile', 'vendor']
 
 collections:
   typefaces:
